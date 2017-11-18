@@ -9,23 +9,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.orm.SugarRecord
+import dlangere.nowplaying.persistence.PlayingNowNotification
 import java.util.*
 
 /**
- * A fragment representing a list of Items.
- *
- *
- * Activities containing this fragment MUST implement the [OnListFragmentInteractionListener]
+ * Activities containing this fragment MUST implement the [SongFragmentInteractionListener]
  * interface.
- */
-/**
- * Mandatory empty constructor for the fragment manager to instantiate the
- * fragment (e.g. upon screen orientation changes).
  */
 class SongFragment : Fragment() {
     // TODO: Customize parameters
     private var mColumnCount = 1
-    private var mListener: OnListFragmentInteractionListener? = null
+    private var mListener: SongFragmentInteractionListener? = null
     private var mSongs: MutableList<Song> = ArrayList()
     private var songRecyclerAdapter : SongRecyclerViewAdapter? = null
 
@@ -34,7 +29,9 @@ class SongFragment : Fragment() {
         if (arguments != null) {
             mColumnCount = arguments.getInt(ARG_COLUMN_COUNT)
         }
-        mSongs.add(Song("Test", "test", Date()))
+        mSongs.addAll(SugarRecord.listAll(PlayingNowNotification::class.java).map { notification ->
+            mListener!!.convert(notification)
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,10 +53,10 @@ class SongFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
+        if (context is SongFragmentInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement SongFragmentInteractionListener")
         }
     }
 
@@ -68,8 +65,9 @@ class SongFragment : Fragment() {
         mListener = null
     }
 
-   interface OnListFragmentInteractionListener {
+   interface SongFragmentInteractionListener {
         fun onSongClicked(item: Song)
+        fun convert(item: PlayingNowNotification) : Song
     }
 
     companion object {

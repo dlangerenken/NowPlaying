@@ -10,12 +10,21 @@ import android.text.TextUtils
 import java.util.*
 import android.support.design.widget.Snackbar
 import android.view.View
+import dlangere.nowplaying.persistence.PlayingNowNotification
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : SongFragment.OnListFragmentInteractionListener, Activity() {
+class MainActivity : SongFragment.SongFragmentInteractionListener, Activity() {
     override fun onSongClicked(item: Song) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // TODO OPEN proper view
+    }
+
+    override fun convert(item: PlayingNowNotification) : Song {
+        val notificationParts = item.title!!.split(" by ")
+        val title = notificationParts[0]
+        val author = if (notificationParts.size > 1) "- " + notificationParts[1] else ""
+
+        return Song(title, author, Date())
     }
 
     companion object {
@@ -35,6 +44,7 @@ class MainActivity : SongFragment.OnListFragmentInteractionListener, Activity() 
             LocalBroadcastManager
                     .getInstance(this)
                     .registerReceiver(onNotice, IntentFilter(NotificationListener.SERVICE_NAME))
+            showSnackbar(toolbar, "Started listening to incoming sounds.", Snackbar.LENGTH_LONG)
         }
 
         if (savedInstanceState == null) {
@@ -87,12 +97,9 @@ class MainActivity : SongFragment.OnListFragmentInteractionListener, Activity() 
         override fun onReceive(context: Context, intent: Intent) {
             // TODO this is not working for bands with " by " in the name ;)
             val message = intent.getStringExtra("title")
-            val notificationParts = message.split(" by ")
-            val title = notificationParts[0]
-            val author = if (notificationParts.size > 1) "- " + notificationParts[1] else ""
-            println(title + author)
-            val song = Song(title, author, Date())
-            getSongFragment()?.songAdded(song)
+            val date = intent.getLongExtra("date", -1)
+
+            getSongFragment()?.songAdded(convert(PlayingNowNotification(message, date, null, null)))
             showSnackbar(toolbar, message, Snackbar.LENGTH_LONG)
         }
     }

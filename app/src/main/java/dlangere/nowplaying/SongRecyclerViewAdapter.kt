@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-import dlangere.nowplaying.SongFragment.OnListFragmentInteractionListener
+import dlangere.nowplaying.SongFragment.SongFragmentInteractionListener
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 
 /**
  * [RecyclerView.Adapter] that can display a [Song] and makes a call to the
- * specified [OnListFragmentInteractionListener].
+ * specified [SongFragmentInteractionListener].
  */
- class SongRecyclerViewAdapter(private val mValues:List<Song>, private val mListener:OnListFragmentInteractionListener?):RecyclerView.Adapter<SongRecyclerViewAdapter.ViewHolder>() {
+ class SongRecyclerViewAdapter(private val mValues:List<Song>, private val mListener: SongFragmentInteractionListener?):RecyclerView.Adapter<SongRecyclerViewAdapter.ViewHolder>() {
 
  override fun getItemCount(): Int {
   return mValues.size

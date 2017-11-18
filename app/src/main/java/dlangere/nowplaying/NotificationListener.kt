@@ -5,6 +5,9 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
+import com.orm.SugarContext
+import dlangere.nowplaying.persistence.PlayingNowNotification
+import java.util.*
 
 /**
  * Created by dlangere on 11/18/17.
@@ -16,6 +19,7 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onListenerConnected() {
         super.onListenerConnected()
+        SugarContext.init(applicationContext)
         Log.i("NotificationListener", "connected")
     }
 
@@ -25,9 +29,13 @@ class NotificationListener : NotificationListenerService() {
             val extras = notification.notification.extras
             val title = extras.getString("android.title")
             Log.i("Title", title)
-            val msgrcv = Intent(SERVICE_NAME)
-            msgrcv.putExtra("title", title)
-            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(msgrcv)
+
+            val now = Date()
+            PlayingNowNotification(title, now.time, null, null).save()
+            val intent = Intent(SERVICE_NAME)
+            intent.putExtra("title", title)
+            intent.putExtra("date", now.time)
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
         }
     }
 
