@@ -22,6 +22,7 @@ class MainActivity : SongFragment.SongFragmentInteractionListener, Activity() {
     }
 
     override fun convert(item: PlayingNowNotification) : SongListElement {
+        // TODO this is not working for bands with " by " in the name ;)
         val notificationParts = item.title!!.split(" by ")
         val title = notificationParts[0]
         val author = if (notificationParts.size > 1) "- " + notificationParts[1] else ""
@@ -97,7 +98,6 @@ class MainActivity : SongFragment.SongFragmentInteractionListener, Activity() {
 
     private val onNotice = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            // TODO this is not working for bands with " by " in the name ;)
             val message = intent.getStringExtra("title")
             val date = intent.getLongExtra("date", -1)
 
@@ -107,7 +107,7 @@ class MainActivity : SongFragment.SongFragmentInteractionListener, Activity() {
     }
 
     private fun getSongFragment(): SongFragment? {
-        return fragmentManager.findFragmentById(R.id.frameLayout) as SongFragment
+        return fragmentManager.findFragmentById(R.id.frameLayout) as SongFragment?
     }
 
     fun showSnackbar(view: View, message: String, duration: Int) {

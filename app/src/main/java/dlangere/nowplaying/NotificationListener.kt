@@ -39,9 +39,4 @@ class NotificationListener : NotificationListenerService() {
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
         }
     }
-
-    override fun onNotificationRemoved(sbn: StatusBarNotification) {
-        Log.i("Msg", "Notification Removed")
-
-    }
 }
