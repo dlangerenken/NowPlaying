@@ -30,7 +30,7 @@
             android:id="@+id/play_time"
             android:layout_alignParentEnd="true"
             tools:text="Moments ago"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem" />
@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_below="@id/play_time"
             tools:text="Mountain View, CA"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem" />

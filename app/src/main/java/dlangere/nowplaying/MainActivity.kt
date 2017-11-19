@@ -27,7 +27,7 @@ class MainActivity : SongFragment.SongFragmentInteractionListener, Activity() {
         val title = notificationParts[0]
         val author = if (notificationParts.size > 1) "- " + notificationParts[1] else ""
 
-        return SongListElement(title, author, Date())
+        return SongListElement(title, author, Date(item.date))
     }
 
     companion object {
