@@ -30,7 +30,7 @@
         </activity>
 
         <receiver
-            android:name=".BroadcastReceiverOnBootComplete"
+            android:name=".OnBootCompleteBroadCastReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
