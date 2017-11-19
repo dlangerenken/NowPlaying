@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="dlangere.nowplaying.SongFragment">
+    tools:context="dlangere.nowplaying.songs.SongFragment">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -15,6 +15,7 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            app:title="@string/app_name"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />

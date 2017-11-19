@@ -15,6 +15,7 @@ import java.util.*
 class NotificationListener : NotificationListenerService() {
     companion object {
         val SERVICE_NAME = "dlangere.nowplaying"
+        private val NOW_PLAYING_PACKAGE_NAME = "com.google.intelligence.sense"
     }
 
     override fun onListenerConnected() {
@@ -25,7 +26,7 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(notification: StatusBarNotification) {
         val packageName = notification.packageName
-        if ("com.google.intelligence.sense" == packageName) {
+        if (NOW_PLAYING_PACKAGE_NAME == packageName) {
             val extras = notification.notification.extras
             val title = extras.getString("android.title")
             Log.i("Title", title)

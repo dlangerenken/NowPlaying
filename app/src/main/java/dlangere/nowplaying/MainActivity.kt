@@ -11,20 +11,22 @@ import java.util.*
 import android.support.design.widget.Snackbar
 import android.view.View
 import dlangere.nowplaying.persistence.PlayingNowNotification
+import dlangere.nowplaying.songs.SongListElement
+import dlangere.nowplaying.songs.SongFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : SongFragment.SongFragmentInteractionListener, Activity() {
-    override fun onSongClicked(item: Song) {
+    override fun onSongClicked(item: SongListElement) {
         // TODO OPEN proper view
     }
 
-    override fun convert(item: PlayingNowNotification) : Song {
+    override fun convert(item: PlayingNowNotification) : SongListElement {
         val notificationParts = item.title!!.split(" by ")
         val title = notificationParts[0]
         val author = if (notificationParts.size > 1) "- " + notificationParts[1] else ""
 
-        return Song(title, author, Date())
+        return SongListElement(title, author, Date())
     }
 
     companion object {

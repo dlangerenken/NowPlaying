@@ -1,4 +1,4 @@
-package dlangere.nowplaying
+package dlangere.nowplaying.songs
 
 import android.content.Context
 import android.os.Bundle
@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.orm.SugarRecord
+import dlangere.nowplaying.R
 import dlangere.nowplaying.persistence.PlayingNowNotification
 import java.util.*
 
@@ -18,20 +19,47 @@ import java.util.*
  * interface.
  */
 class SongFragment : Fragment() {
-    // TODO: Customize parameters
     private var mColumnCount = 1
     private var mListener: SongFragmentInteractionListener? = null
-    private var mSongs: MutableList<Song> = ArrayList()
-    private var songRecyclerAdapter : SongRecyclerViewAdapter? = null
+    private var mListElements: MutableList<ListElement> = ArrayList()
+    private var songRecyclerAdapter: SongRecyclerViewAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             mColumnCount = arguments.getInt(ARG_COLUMN_COUNT)
         }
-        mSongs.addAll(SugarRecord.listAll(PlayingNowNotification::class.java).map { notification ->
+
+        val songMap = toMap(SugarRecord.listAll(PlayingNowNotification::class.java).map { notification ->
             mListener!!.convert(notification)
         })
+
+        for (date in songMap.keys) {
+            val header = DaySectionListElement(date)
+            mListElements.add(header)
+            mListElements.addAll(songMap[date]!!.sortedBy { song -> song.listenedAt }.reversed())
+        }
+    }
+
+    private fun toMap(songs: List<SongListElement>): Map<Long, List<SongListElement>> {
+        val map = TreeMap<Long, MutableList<SongListElement>>()
+        val cal = Calendar.getInstance()
+        for (song in songs) {
+            cal.time = song.listenedAt
+            cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            val filteredTime = cal.timeInMillis
+
+            var value: MutableList<SongListElement>? = map[filteredTime]
+            if (value == null) {
+                value = ArrayList()
+                map.put(filteredTime, value)
+            }
+            value.add(song)
+        }
+        return map
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +72,7 @@ class SongFragment : Fragment() {
             } else {
                 view.layoutManager = GridLayoutManager(context, mColumnCount)
             }
-            songRecyclerAdapter = SongRecyclerViewAdapter(mSongs, mListener)
+            songRecyclerAdapter = SongRecyclerViewAdapter(mListElements, mListener)
             view.adapter = songRecyclerAdapter
         }
         return view
@@ -65,9 +93,9 @@ class SongFragment : Fragment() {
         mListener = null
     }
 
-   interface SongFragmentInteractionListener {
-        fun onSongClicked(item: Song)
-        fun convert(item: PlayingNowNotification) : Song
+    interface SongFragmentInteractionListener {
+        fun onSongClicked(item: SongListElement)
+        fun convert(item: PlayingNowNotification): SongListElement
     }
 
     companion object {
@@ -82,8 +110,8 @@ class SongFragment : Fragment() {
         }
     }
 
-    fun songAdded(song: Song) {
-        mSongs.add(song)
-        songRecyclerAdapter?.notifyItemInserted(mSongs.size - 1)
+    fun songAdded(songListElement: SongListElement) {
+        mListElements.add(1, songListElement)
+        songRecyclerAdapter?.notifyItemInserted(1)
     }
 }
