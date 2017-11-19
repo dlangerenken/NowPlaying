@@ -23,6 +23,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
+        android:background="#e6e3e3"
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
